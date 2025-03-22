@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:zuqui/core/config/app.dart';
 import 'package:zuqui/core/config/theme.dart';
 import 'package:zuqui/routes.dart';
 
-void main() {
+void main() async {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(const MyApp());
 }
 
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: AppConfig.name,
         theme: AppTheme.themeData,
-        initialRoute: initialRoute,
+        darkTheme: AppTheme.darkThemeData,
         routes: routes);
   }
 }

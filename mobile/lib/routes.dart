@@ -1,7 +1,7 @@
 import 'package:zuqui/routes/home.dart';
-
-const initialRoute = "/home";
+import 'package:zuqui/routes/splash.dart';
 
 var routes = {
+  "/": (context) => Splash(),
   "/home": (context) => Home(),
 };
