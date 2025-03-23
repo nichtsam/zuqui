@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:zuqui/core/config/app.dart';
-import 'package:zuqui/core/config/theme.dart';
+import 'package:zuqui/config/app.dart';
+import 'package:zuqui/config/theme.dart';
 import 'package:zuqui/routes.dart';
 
 void main() async {
@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
         title: AppConfig.name,
         theme: AppTheme.themeData,
         darkTheme: AppTheme.darkThemeData,
+        initialRoute: initialRoute,
         routes: routes);
   }
 }

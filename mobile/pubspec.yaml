@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   path: ^1.9.0
   flutter_native_splash: ^2.4.4
+  form_builder_validators: ^11.1.2
+  pin_code_fields: ^8.0.1
 
 dev_dependencies:
   flutter_test:

@@ -15,14 +15,14 @@ class _SplashState extends State<Splash> {
   void initState() {
     super.initState();
 
-    Timer(Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, "/home");
+    Timer(Duration(seconds: 1), () {
+      Navigator.pushNamed(context, "/auth/login");
       FlutterNativeSplash.remove();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold();
   }
 }
