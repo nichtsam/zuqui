@@ -1,9 +1,9 @@
-import 'package:zuqui/present/auth/pages/login.dart';
-import 'package:zuqui/present/auth/pages/verify_otp.dart';
-import 'package:zuqui/present/home/pages/home.dart';
-import 'package:zuqui/present/splash/pages/splash.dart';
+import 'package:zuqui/present/auth/login.dart';
+import 'package:zuqui/present/auth/verify_otp.dart';
+import 'package:zuqui/present/home.dart';
+import 'package:zuqui/present/splash.dart';
 
-const initialRoute = "/splash";
+const initialRoute = "/auth/login";
 var routes = {
   "/splash": (context) => Splash(),
   "/auth/login": (context) => Login(),

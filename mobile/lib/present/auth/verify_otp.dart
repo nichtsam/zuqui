@@ -1,9 +1,13 @@
-import 'dart:async';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:zuqui/present/auth/utils/send_otp.dart';
+import 'package:zuqui/service/auth/main.dart';
+import 'package:zuqui/utils/misc.dart';
+import 'package:zuqui/utils/snackbar.dart';
 
 class VerifyOtpArgs {
   final String email;
@@ -23,8 +27,12 @@ class _VerifyOTPState extends State<VerifyOTP> {
   final _otpController = TextEditingController();
   bool _verifying = false;
 
-  Timer? _resendTimer;
   int _resendCooldown = 0;
+  void Function()? _cancelCooldown;
+
+  VerifyOtpArgs get args {
+    return ModalRoute.of(context)!.settings.arguments as VerifyOtpArgs;
+  }
 
   @override
   void initState() {
@@ -33,26 +41,11 @@ class _VerifyOTPState extends State<VerifyOTP> {
   }
 
   void _startCooldown() {
-    setState(() {
-      _resendCooldown = 60;
-    });
-
-    _resendTimer?.cancel();
-    _resendTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_resendCooldown > 0) {
-          _resendCooldown--;
-        } else {
-          _resendTimer?.cancel();
-        }
-      });
-    });
+    _cancelCooldown?.call();
+    _cancelCooldown = countdown(60, (v) => setState(() => _resendCooldown = v));
   }
 
   void _verify() async {
-    if (!mounted) {
-      return;
-    }
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -60,35 +53,47 @@ class _VerifyOTPState extends State<VerifyOTP> {
     setState(() {
       _verifying = true;
     });
-    final otp = _otpController.text;
-    debugPrint(otp);
-    await Future.delayed(Duration(seconds: 1)); // verify process
-    if (mounted) {
-      Navigator.pushNamedAndRemoveUntil(context, "/home", (_) => false);
-    }
 
-    setState(() {
-      _verifying = false;
-    });
+    final otp = _otpController.text;
+
+    final authService = GetIt.instance.get<AuthSerice>();
+    final result = await authService.loginOTP(args.email, otp);
+    result.match(
+      onOk: (_) {
+        Navigator.pushNamedAndRemoveUntil(context, "/home", (_) => false);
+      },
+      onError: (error) {
+        if (error is DioException && error.response?.statusCode == 401) {
+          snackBar("Invalid Code");
+        } else {
+          snackBar(error.toString());
+        }
+
+        setState(() {
+          _verifying = false;
+        });
+      },
+    );
   }
 
   void _cancel() {
     Navigator.pop(context);
   }
 
-  void _resend() {
+  void _resend() async {
+    final authService = GetIt.instance.get<AuthSerice>();
+    await sendOTP(authService, args.email);
     _startCooldown();
   }
 
   @override
   void dispose() {
-    _resendTimer?.cancel();
+    _cancelCooldown?.call();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as VerifyOtpArgs;
     final resendCooling = _resendCooldown > 0;
     final resendText =
         resendCooling ? "Resend (${_resendCooldown}s)" : "Resend";
@@ -108,7 +113,13 @@ class _VerifyOTPState extends State<VerifyOTP> {
               Column(
                 children: [
                   Center(child: Text(args.email)),
-                  TextButton(onPressed: resend, child: Text(resendText)),
+                  SizedBox(
+                    width: 120,
+                    child: TextButton(
+                      onPressed: resend,
+                      child: Text(resendText),
+                    ),
+                  ),
                 ],
               ),
               Column(

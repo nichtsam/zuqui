@@ -7,13 +7,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:zuqui/core/result.dart';
 import 'package:zuqui/main.dart';
+import 'package:zuqui/service/auth/main.dart';
+import 'package:zuqui/service/user/main.dart';
+import 'package:zuqui/service/user/model.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    await tester.pumpWidget(
+      MyApp(authService: MockAuthService(), userService: MockUserService()),
+    );
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
@@ -27,4 +32,44 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+}
+
+class MockAuthService implements AuthSerice {
+  @override
+  Future<Result<String>> getAccessToken() {
+    // TODO: implement getAccessToken
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Result<void>> loginOTP(String email, String otp) {
+    // TODO: implement loginOTP
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Result<void>> logout() {
+    // TODO: implement logout
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Result<void>> refreshTokenPair() {
+    // TODO: implement refreshTokenPair
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Result<void>> sendOTP(String email) {
+    // TODO: implement sendOTP
+    throw UnimplementedError();
+  }
+}
+
+class MockUserService implements UserSerice {
+  @override
+  Future<Result<User>> getCurrentUser() {
+    // TODO: implement getCurrentUser
+    throw UnimplementedError();
+  }
 }

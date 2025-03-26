@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:zuqui/present/auth/pages/verify_otp.dart';
+import 'package:get_it/get_it.dart';
+import 'package:zuqui/present/auth/utils/send_otp.dart';
+import 'package:zuqui/present/auth/verify_otp.dart';
+
+import '../../service/auth/main.dart' show AuthSerice;
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -12,18 +16,35 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  bool _loading = false;
 
-  void _submit() {
+  void _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
+    setState(() {
+      _loading = true;
+    });
+
     final email = _emailController.text;
-    Navigator.pushNamed(
-      context,
-      "/auth/otp/verify",
-      arguments: VerifyOtpArgs(email: email),
+
+    final authService = GetIt.instance.get<AuthSerice>();
+    final result = await sendOTP(authService, email);
+    result.match(
+      onOk: (_) {
+        Navigator.pushNamed(
+          context,
+          "/auth/otp/verify",
+          arguments: VerifyOtpArgs(email: email),
+        );
+      },
+      onError: (_) {},
     );
+
+    setState(() {
+      _loading = false;
+    });
   }
 
   @override
@@ -62,8 +83,11 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: _submit,
-                      child: const Text("Send a Login Code"),
+                      onPressed: _loading ? null : _submit,
+                      child:
+                          _loading
+                              ? CircularProgressIndicator.adaptive()
+                              : const Text("Send a Login Code"),
                     ),
                   ],
                 ),

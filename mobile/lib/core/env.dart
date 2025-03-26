@@ -3,10 +3,10 @@ const _coreApiUrl = String.fromEnvironment("CORE_API_URL");
 
 enum AppEnv { local, prod }
 
-class Env {
+sealed class Env {
   static final appEnv = AppEnv.values.firstWhere(
     (e) => e.name == _appEnv,
     orElse: () => throw StateError('Invalid environment: APP_ENV'),
   );
-  static final coreApiUrl = _coreApiUrl;
+  static const coreApiUrl = _coreApiUrl;
 }
