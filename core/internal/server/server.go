@@ -57,6 +57,6 @@ func (app *App) registerRoutes() {
 	}))
 
 	authRoutes.RegisterRoutes(app, app.repo.User, app.auth, app.email, app.quiz)
-	userRoutes.RegisterRoutes(app, app.auth)
+	userRoutes.RegisterRoutes(app, app.repo.User, app.auth)
 	quizRoutes.RegisterRoutes(app, app.auth, app.quiz)
 }
