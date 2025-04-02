@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:zuqui/present/auth/utils/send_otp.dart';
 import 'package:zuqui/service/auth/main.dart';
@@ -31,7 +32,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
   void Function()? _cancelCooldown;
 
   VerifyOtpArgs get args {
-    return ModalRoute.of(context)!.settings.arguments as VerifyOtpArgs;
+    return GoRouterState.of(context).extra! as VerifyOtpArgs;
   }
 
   @override
@@ -60,7 +61,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
     final result = await authService.loginOTP(args.email, otp);
     result.match(
       onOk: (_) {
-        Navigator.pushNamedAndRemoveUntil(context, "/home", (_) => false);
+        context.go("/home");
       },
       onError: (error) {
         if (error is DioException && error.response?.statusCode == 401) {

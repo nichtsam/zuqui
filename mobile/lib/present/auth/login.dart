@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zuqui/present/auth/utils/send_otp.dart';
 import 'package:zuqui/present/auth/verify_otp.dart';
 
@@ -33,11 +34,7 @@ class _LoginState extends State<Login> {
     final result = await sendOTP(authService, email);
     result.match(
       onOk: (_) {
-        Navigator.pushNamed(
-          context,
-          "/auth/otp/verify",
-          arguments: VerifyOtpArgs(email: email),
-        );
+        context.push("/auth/otp/verify", extra: VerifyOtpArgs(email: email));
       },
       onError: (_) {},
     );

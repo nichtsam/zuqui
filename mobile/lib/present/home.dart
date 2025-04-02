@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,11 +15,7 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.logout),
         onPressed: () {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            "/auth/login",
-            (_) => false,
-          );
+          context.go("/auth/login");
         },
       ),
       body: SafeArea(

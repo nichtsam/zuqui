@@ -9,7 +9,7 @@ import 'package:zuqui/config/app.dart';
 import 'package:zuqui/config/theme.dart';
 import 'package:zuqui/core/env.dart';
 import 'package:zuqui/core/network/auth_interceptor.dart';
-import 'package:zuqui/routes.dart';
+import 'package:zuqui/router.dart';
 import 'package:zuqui/service/auth/main.dart';
 import 'package:zuqui/service/auth/token.dart';
 import 'package:zuqui/service/user/main.dart';
@@ -76,14 +76,13 @@ class MyApp extends StatelessWidget {
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
     );
 
-    return MaterialApp(
+    return MaterialApp.router(
       scaffoldMessengerKey: rootScaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
       title: AppConfig.name,
       theme: AppTheme.themeData,
       darkTheme: AppTheme.darkThemeData,
-      initialRoute: initialRoute,
-      routes: routes,
+      routerConfig: router,
     );
   }
 }
